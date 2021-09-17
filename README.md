@@ -1,5 +1,4 @@
-# pokemon
-Team Rocket Black Market
+# Pokemon Black Market By Team Rocket
 Data fetched from https://pokeapi.co/
 
-You can get more API at routes
+More API at routes.go
