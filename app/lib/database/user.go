@@ -3,8 +3,6 @@ package database
 import (
 	"app/config"
 	"app/models"
-
-	"golang.org/x/crypto/bcrypt"
 )
 
 func CheckEmail(email string) (bool, error) {
@@ -30,8 +28,8 @@ func CheckSameUserId(userid int) (bool, error) {
 	return false, nil
 }
 
-func OurEncrypt(plain string) string {
-	bytePlain := []byte(plain)
-	hashed, _ := bcrypt.GenerateFromPassword(bytePlain, bcrypt.MinCost)
-	return string(hashed)
-}
+// func OurEncrypt(plain string) string {
+// 	bytePlain := []byte(plain)
+// 	hashed, _ := bcrypt.GenerateFromPassword(bytePlain, bcrypt.MinCost)
+// 	return string(hashed)
+// }

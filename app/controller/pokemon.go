@@ -2,7 +2,6 @@ package controller
 
 import (
 	"app/lib/database"
-	"app/middlewares"
 	"app/models"
 	"encoding/json"
 	"fmt"
@@ -15,10 +14,10 @@ import (
 
 // Consume pokedex API to check pokemon
 func SupplierGetPokemonFromPokedex(c echo.Context) error {
-	auth := AuthorizedSupplier(c)
-	if !auth {
-		return echo.NewHTTPError(http.StatusUnauthorized, "This account does not have access to this route")
-	}
+	//auth := AuthorizedSupplier(c)
+	// if !auth {
+	// 	return echo.NewHTTPError(http.StatusUnauthorized, "This account does not have access to this route")
+	// }
 	pokemon_id, err := strconv.Atoi(c.Param("pokemon_id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
@@ -39,17 +38,18 @@ func SupplierGetPokemonFromPokedex(c echo.Context) error {
 
 // Add Supplier add Pokemon to Database
 func SupplierAddPokemonInDatabase(c echo.Context) error {
-	auth := AuthorizedSupplier(c)
-	if !auth {
-		return echo.NewHTTPError(http.StatusUnauthorized, "This account does not have access to this route")
-	}
+	// auth := AuthorizedSupplier(c)
+	// if !auth {
+	// 	return echo.NewHTTPError(http.StatusUnauthorized, "This account does not have access to this route")
+	// }
 	pokemon_id, err := strconv.Atoi(c.Param("pokemon_id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
 			"message": "invalid pokemon id",
 		})
 	}
-	pokedex_url := fmt.Sprintf("https://pokeapi.co/api/v2/pokemon/%d", pokemon_id) //Consuming Pokedex API
+	//Consuming Pokedex API
+	pokedex_url := fmt.Sprintf("https://pokeapi.co/api/v2/pokemon/%d", pokemon_id)
 	response, err := http.Get(pokedex_url)
 	if err != nil {
 		return c.JSON(http.StatusBadGateway, err)
@@ -58,24 +58,25 @@ func SupplierAddPokemonInDatabase(c echo.Context) error {
 	defer response.Body.Close()
 	var pokedex models.Pokedexs
 	json.Unmarshal(response_data, &pokedex)
-	pokemon := models.Pokemons{ //Binding request body
+	pokemon := models.Pokemons{
 		ID:   pokedex.ID,
 		Name: pokedex.Name,
 	}
 	c.Bind(&pokemon)
-	new_pokemon, err := database.AddPokemon(pokemon) //Add Pokemon
+	//Add Pokemon
+	addPokemonDb, err := database.AddPokemon(pokemon)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
-	return c.JSON(http.StatusOK, new_pokemon)
+	return c.JSON(http.StatusOK, addPokemonDb)
 }
 
 //Supplier Edit Existing Pokemon in Database
 func SupplierEditStockPokemon(c echo.Context) error {
-	auth := AuthorizedSupplier(c)
-	if !auth {
-		return echo.NewHTTPError(http.StatusUnauthorized, "This account does not have access to this route")
-	}
+	// auth := AuthorizedSupplier(c)
+	// if !auth {
+	// 	return echo.NewHTTPError(http.StatusUnauthorized, "This account does not have access to this route")
+	// }
 	pokemon_id, err := strconv.Atoi(c.Param("pokemon_id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
@@ -100,10 +101,10 @@ func SupplierEditStockPokemon(c echo.Context) error {
 
 //Supplier Delete Pokemon from Database
 func SupplierDeletePokemonInDatabase(c echo.Context) error {
-	auth := AuthorizedSupplier(c)
-	if !auth {
-		return echo.NewHTTPError(http.StatusUnauthorized, "This account does not have access to this route")
-	}
+	// auth := AuthorizedSupplier(c)
+	// if !auth {
+	// 	return echo.NewHTTPError(http.StatusUnauthorized, "This account does not have access to this route")
+	// }
 	pokemon_id, err := strconv.Atoi(c.Param("pokemon_id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, map[string]interface{}{
@@ -119,30 +120,14 @@ func SupplierDeletePokemonInDatabase(c echo.Context) error {
 
 // Seller get pokemon by customer request
 func SellerSearchAskedPokemon(c echo.Context) error {
-	auth := AuthorizedSeller(c)
-	if !auth {
-		return echo.NewHTTPError(http.StatusUnauthorized, "This account does not have access to this route")
-	}
+	// auth := AuthorizedSeller(c)
+	// if !auth {
+	// 	return echo.NewHTTPError(http.StatusUnauthorized, "This account does not have access to this route")
+	// }
 	pokemon_name := c.QueryParam("pokemon_name")
 	pokemons, err := database.SearchPokemon(pokemon_name) //Search Pokemon
 	if err != nil {
 		return c.JSON(http.StatusNotFound, err)
 	}
 	return c.JSON(http.StatusOK, pokemons)
-}
-
-func AuthorizedSupplier(c echo.Context) bool {
-	_, role := middlewares.ExtractToken(c)
-	if role != "Supplier" {
-		return false
-	}
-	return true
-}
-
-func AuthorizedSeller(c echo.Context) bool {
-	_, role := middlewares.ExtractToken(c)
-	if role != "Seller" {
-		return false
-	}
-	return true
 }

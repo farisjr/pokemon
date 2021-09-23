@@ -40,8 +40,8 @@ func DeletePokemon(pokemon_id int) (models.Pokemons, error) {
 
 func SearchPokemon(pokemon_name string) ([]models.Pokemons, error) {
 	var pokemon []models.Pokemons
-	search_key := ("%" + pokemon_name + "%")
-	if err := config.DB.Find(&pokemon, "name LIKE ?", search_key).Error; err != nil {
+	name := ("%" + pokemon_name + "%")
+	if err := config.DB.Find(&pokemon, "name LIKE ?", name).Error; err != nil {
 		return pokemon, err
 	}
 	return pokemon, nil
