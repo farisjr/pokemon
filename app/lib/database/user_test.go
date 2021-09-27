@@ -15,10 +15,6 @@ var (
 		Password: "123",
 		Role:     "Boss",
 	}
-	mock_user_login = models.Users{
-		Email:    "tono@gmail.com",
-		Password: "123",
-	}
 )
 
 func TestCheckEmailError(t *testing.T) {

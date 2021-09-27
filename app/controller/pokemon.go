@@ -63,8 +63,7 @@ func SupplierAddPokemonInDatabase(c echo.Context) error {
 		Name: pokedex.Name,
 	}
 	c.Bind(&pokemon)
-	//Add Pokemon
-	addPokemonDb, err := database.AddPokemon(pokemon)
+	addPokemonDb, err := database.AddPokemon(pokemon) //Add Pokemon
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}

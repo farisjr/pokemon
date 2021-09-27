@@ -10,9 +10,9 @@ import (
 
 var (
 	mock_pokemon = models.Pokemons{
-		ID: 1,
-		Name:      "ivysaur",
-		Stock:     100,
+		ID:    1,
+		Name:  "ivysaur",
+		Stock: 100,
 	}
 )
 

@@ -17,7 +17,7 @@ func CheckEmail(email string) (bool, error) {
 	}
 }
 
-func CheckSameUserId(userid int) (bool, error) {
+func CheckSameUserId(userid uint) (bool, error) {
 	var user models.Users
 	if err := config.DB.Raw("select * from users where user_id = ?", userid).Scan(&user).Error; err != nil {
 		return true, err

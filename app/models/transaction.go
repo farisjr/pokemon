@@ -6,11 +6,11 @@ import (
 )
 
 type Transactions struct {
-	TransactionID int    `gorm:"primarykey; unique; not null" json:"transaction_id" form:"transaction_id"`
+	TransactionID uint    `gorm:"primarykey; unique; not null" json:"transaction_id" form:"transaction_id"`
 	PokemonID     uint   `json:"pokemon_id" form:"pokemon_id"`
 	SellerID      uint   `json:"seller_id" form:"seller_id"`
-	TotalPrice    int    `json:"total_price" form:"total_price"`
-	Quantity      int    `json:"quantity" form:"quantity"`
+	TotalPrice    uint    `json:"total_price" form:"total_price"`
+	Quantity      uint    `json:"quantity" form:"quantity"`
 	Status        string `json:"status" form:"status"`
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
