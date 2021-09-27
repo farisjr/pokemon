@@ -2,7 +2,6 @@ package controller
 
 import (
 	"app/lib/database"
-	"app/middlewares"
 	"app/models"
 	"net/http"
 
@@ -25,7 +24,7 @@ func SupplierSignUp(c echo.Context) error {
 	}
 	addSupplier := models.Users{}
 	addSupplier.UserID = input.UserID
-	addSupplier.Password = database.OurEncrypt(input.Password)
+	//addSupplier.Password = database.OurEncrypt(input.Password)
 	addSupplier.Role = "Supplier"
 	c.Bind(&addSupplier)
 	supplier, err := database.RegisterSeller(addSupplier)
@@ -44,29 +43,29 @@ func SupplierSignUp(c echo.Context) error {
 }
 
 //Login for supplier with matching userid and password
-func SupplierLogin(c echo.Context) error {
-	input := models.Users{}
-	c.Bind(&input)
-	loginSupplier, err := database.LoginSupplier(input.UserID, input.Password)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
-	}
-	mapLoginSupplier := map[string]interface{}{
-		"UserID": loginSupplier.UserID,
-		"Token":  loginSupplier.Token,
-	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message": "succes login",
-		"data":    mapLoginSupplier,
-	})
-}
+// func SupplierLogin(c echo.Context) error {
+// 	input := models.Users{}
+// 	c.Bind(&input)
+// 	loginSupplier, err := database.LoginSupplier(input.UserID, input.Password)
+// 	if err != nil {
+// 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+// 	}
+// 	mapLoginSupplier := map[string]interface{}{
+// 		"UserID": loginSupplier.UserID,
+// 		"Token":  loginSupplier.Token,
+// 	}
+// 	return c.JSON(http.StatusOK, map[string]interface{}{
+// 		"message": "succes login",
+// 		"data":    mapLoginSupplier,
+// 	})
+// }
 
 //Authorization Supplier
-func SupplierAutorize(supplierId int, c echo.Context) error {
-	authSupplier, err := database.GetOneSeller(supplierId)
-	LoggedInSupplier, role := middlewares.ExtractToken(c)
-	if LoggedInSupplier != supplierId || string(authSupplier.Role) != role || err != nil || authSupplier.Role != "Supplier" {
-		return echo.NewHTTPError(http.StatusUnauthorized, "This user does not have access")
-	}
-	return nil
-}
+// func SupplierAutorize(supplierId int, c echo.Context) error {
+// 	authSupplier, err := database.GetOneSeller(supplierId)
+// 	LoggedInSupplier, role := middlewares.ExtractToken(c)
+// 	if LoggedInSupplier != supplierId || string(authSupplier.Role) != role || err != nil || authSupplier.Role != "Supplier" {
+// 		return echo.NewHTTPError(http.StatusUnauthorized, "This user does not have access")
+// 	}
+// 	return nil
+// }

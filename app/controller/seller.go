@@ -2,7 +2,6 @@ package controller
 
 import (
 	"app/lib/database"
-	"app/middlewares"
 	"app/models"
 	"net/http"
 
@@ -25,7 +24,7 @@ func SellerSignUp(c echo.Context) error {
 	}
 	addSeller := models.Users{}
 	addSeller.UserID = input.UserID
-	addSeller.Password = database.OurEncrypt(input.Password)
+	//addSeller.Password = database.OurEncrypt(input.Password)
 	addSeller.Role = "Seller"
 	c.Bind(&addSeller)
 	seller, err := database.RegisterSeller(addSeller)
@@ -43,30 +42,30 @@ func SellerSignUp(c echo.Context) error {
 	})
 }
 
-//Login for seller with matching userid and password
-func SellerLogin(c echo.Context) error {
-	input := models.Users{}
-	c.Bind(&input)
-	loginSeller, err := database.LoginSeller(input.UserID, input.Password)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
-	}
-	mapLoginSeller := map[string]interface{}{
-		"UserID": loginSeller.UserID,
-		"Token":  loginSeller.Token,
-	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message": "succes login",
-		"data":    mapLoginSeller,
-	})
-}
+// //Login for seller with matching userid and password
+// func SellerLogin(c echo.Context) error {
+// 	input := models.Users{}
+// 	c.Bind(&input)
+// 	loginSeller, err := database.LoginSeller(input.UserID, input.Password)
+// 	if err != nil {
+// 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+// 	}
+// 	mapLoginSeller := map[string]interface{}{
+// 		"UserID": loginSeller.UserID,
+// 		"Token":  loginSeller.Token,
+// 	}
+// 	return c.JSON(http.StatusOK, map[string]interface{}{
+// 		"message": "succes login",
+// 		"data":    mapLoginSeller,
+// 	})
+// }
 
 //Authorization Seller
-func SellerAutorize(sellerId int, c echo.Context) error {
-	authSeller, err := database.GetOneSeller(sellerId)
-	LoggedInSeller, role := middlewares.ExtractToken(c)
-	if LoggedInSeller != sellerId || string(authSeller.Role) != role || err != nil || authSeller.Role != "Seller" {
-		return echo.NewHTTPError(http.StatusUnauthorized, "This user does not have access")
-	}
-	return nil
-}
+// func SellerAutorize(sellerId int, c echo.Context) error {
+// 	authSeller, err := database.GetOneSeller(sellerId)
+// 	LoggedInSeller, role := middlewares.ExtractToken(c)
+// 	if LoggedInSeller != sellerId || string(authSeller.Role) != role || err != nil || authSeller.Role != "Seller" {
+// 		return echo.NewHTTPError(http.StatusUnauthorized, "This user does not have access")
+// 	}
+// 	return nil
+// }

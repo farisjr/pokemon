@@ -10,18 +10,22 @@ import (
 
 var (
 	mock_user = models.Users{
-		Name:     "Tono",
+		Name:     "tono",
 		Email:    "tono@gmail.com",
 		Password: "123",
 		Role:     "Boss",
 	}
-	mock_user_login = models.Users{
-		Email:    "tono@gmail.com",
-		Password: "123",
-	}
 )
 
-func TestCheckEmailSame(t *testing.T) {
+func TestCheckEmailError(t *testing.T) {
+	config.TestConfig()
+	config.DB.Migrator().DropTable(&models.Users{})
+	RegisterSeller(mock_user)
+	_, err := CheckEmail("Tono@gmail.com")
+	assert.Error(t, err)
+}
+
+func TestCheckEmailSameSuccess(t *testing.T) {
 	config.TestConfig()
 	config.DB.Migrator().DropTable(&models.Users{})
 	config.DB.Migrator().AutoMigrate(&models.Users{})
@@ -40,7 +44,7 @@ func TestCheckUserIdError(t *testing.T) {
 	assert.Error(t, err)
 }
 
-func TestCheckUserId(t *testing.T) {
+func TestCheckUserIdSuccess(t *testing.T) {
 	config.TestConfig()
 	config.DB.Migrator().DropTable(&models.Users{})
 	config.DB.Migrator().AutoMigrate(&models.Users{})
@@ -49,12 +53,4 @@ func TestCheckUserId(t *testing.T) {
 	if assert.NoError(t, err) {
 		assert.Equal(t, true, same)
 	}
-}
-
-func TestCheckEmailError(t *testing.T) {
-	config.TestConfig()
-	config.DB.Migrator().DropTable(&models.Users{})
-	RegisterSeller(mock_user)
-	_, err := CheckEmail("Tono@gmail.com")
-	assert.Error(t, err)
 }

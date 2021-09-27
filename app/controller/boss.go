@@ -2,7 +2,6 @@ package controller
 
 import (
 	"app/lib/database"
-	"app/middlewares"
 	"app/models"
 	"net/http"
 
@@ -25,7 +24,7 @@ func BossSignUp(c echo.Context) error {
 	}
 	addBoss := models.Users{}
 	addBoss.UserID = input.UserID
-	addBoss.Password = database.OurEncrypt(input.Password)
+	//addBoss.Password = database.OurEncrypt(input.Password)
 	addBoss.Role = "Boss"
 	c.Bind(&addBoss)
 	seller, err := database.RegisterSeller(addBoss)
@@ -43,30 +42,30 @@ func BossSignUp(c echo.Context) error {
 	})
 }
 
-//Login for seller with matching userid and password
-func BossLogin(c echo.Context) error {
-	input := models.Users{}
-	c.Bind(&input)
-	loginBoss, err := database.LoginBoss(input.UserID, input.Password)
-	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
-	}
-	mapLoginBoss := map[string]interface{}{
-		"UserID": loginBoss.UserID,
-		"Token":  loginBoss.Token,
-	}
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"message": "success login",
-		"data":    mapLoginBoss,
-	})
-}
+//Login for boss with matching userid and password
+// func BossLogin(c echo.Context) error {
+// 	input := models.Users{}
+// 	c.Bind(&input)
+// 	loginBoss, err := database.LoginBoss(input.UserID, input.Password)
+// 	if err != nil {
+// 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+// 	}
+// 	mapLoginBoss := map[string]interface{}{
+// 		"UserID": loginBoss.UserID,
+// 		"Token":  loginBoss.Token,
+// 	}
+// 	return c.JSON(http.StatusOK, map[string]interface{}{
+// 		"message": "success login",
+// 		"data":    mapLoginBoss,
+// 	})
+// }
 
 //Authorization Boss
-func BossAutorize(bossId int, c echo.Context) error {
-	authBoss, err := database.GetOneBoss(bossId)
-	LoggedInBoss, role := middlewares.ExtractToken(c)
-	if LoggedInBoss != bossId || string(authBoss.Role) != role || err != nil || authBoss.Role != "Boss" {
-		return echo.NewHTTPError(http.StatusUnauthorized, "This user does not have access")
-	}
-	return nil
-}
+// func BossAutorize(bossId int, c echo.Context) error {
+// 	authBoss, err := database.GetOneBoss(bossId)
+// 	LoggedInBoss, role := middlewares.ExtractToken(c)
+// 	if LoggedInBoss != bossId || string(authBoss.Role) != role || err != nil || authBoss.Role != "Boss" {
+// 		return echo.NewHTTPError(http.StatusUnauthorized, "This user does not have access")
+// 	}
+// 	return nil
+// }

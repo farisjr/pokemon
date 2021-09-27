@@ -9,7 +9,7 @@ import (
 type Pokemons struct {
 	ID        uint   `gorm:"primarykey;uniqueIndex" json:"id"`
 	Name      string `json:"name"`
-	Stock     int    `json:"stock" form:"stock"`
+	Stock     uint    `json:"stock" form:"stock"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
